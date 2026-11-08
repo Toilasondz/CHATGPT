@@ -1,0 +1,39 @@
+name: Verify and package native VideoStarTool dylib
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  verify-and-package:
+    runs-on: macos-15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify supplied native dylib
+        run: bash scripts/verify-prebuilt.sh
+
+      - name: Package release artifact
+        run: |
+          mkdir -p dist
+          cp Prebuilt/VideoStarTool.dylib dist/
+          cp README.md dist/
+          cp Verification/NativeFeatureAudit.md dist/
+          cp Verification/SHA256SUMS.txt dist/
+          cd dist
+          shasum -a 256 VideoStarTool.dylib > SHA256SUMS.generated.txt
+          zip -r ../VideoStarTool-iOS-arm64-native.zip .
+
+      - name: Upload native dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: VideoStarTool-iOS-arm64-native
+          path: |
+            Prebuilt/VideoStarTool.dylib
+            VideoStarTool-iOS-arm64-native.zip
+          if-no-files-found: error
+          retention-days: 30
