@@ -1,0 +1,7 @@
+1. Create a new empty GitHub repository.
+2. Upload/push all files and folders in this project to the repository's main branch.
+3. Open Actions -> Verify and package native VideoStarTool dylib.
+4. Download the artifact named VideoStarTool-iOS-arm64-native.
+5. The artifact contains the exact prebuilt VideoStarTool.dylib from Prebuilt/.
+
+Important: this workflow validates and packages the prebuilt ARM64 library. It deliberately does not rebuild the earlier ExperimentalSources, because those sources contain placeholder implementations for three native features.
